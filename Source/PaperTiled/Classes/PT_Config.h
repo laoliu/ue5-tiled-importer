@@ -6,17 +6,19 @@
 #include "Engine/DataAsset.h"
 #include "PT_Config.generated.h"
 
-/**
- * 
- */
+// Information to assist in auto-importing Tiled assets into Paper2D assets
 UCLASS()
 class PAPERTILED_API UPT_Config : public UDataAsset
 {
 	GENERATED_BODY()
 	
 public:
-	// the path where Tiled assets live for this particular configuration
+	// A directory with Tiled assets
 	UPROPERTY(EditAnywhere)
-	FDirectoryPath path;
+	FDirectoryPath TiledImportFolder;
+
+	// A directory within the project where Paper2D assets will be generated
+	UPROPERTY(EditAnywhere)
+	FDirectoryPath DestinationFolder;
 };
 
