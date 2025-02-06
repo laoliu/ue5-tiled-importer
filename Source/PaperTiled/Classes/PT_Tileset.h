@@ -15,6 +15,6 @@ class PAPERTILED_API UPT_Tileset : public UPaperTileSet
 
 public:
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = "Paper Tiled")
 	FFilePath TiledTileset;
 };

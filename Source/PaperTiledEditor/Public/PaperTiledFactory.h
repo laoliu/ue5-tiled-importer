@@ -6,16 +6,14 @@
 #include "Factories/Factory.h"
 #include "PaperTiledFactory.generated.h"
 
-/**
- * 
- */
+// asset factory to generate Paper Tiled tile set assets
 UCLASS()
-class PAPERTILEDEDITOR_API UPaperTiledFactory : public UFactory
+class PAPERTILEDEDITOR_API UTileSetAssetFactory : public UFactory
 {
 	GENERATED_BODY()
 	
 public:
-	UPaperTiledFactory();
+	UTileSetAssetFactory();
 	UObject* FactoryCreateNew(
 		UClass* Class,
 		UObject* InParent,

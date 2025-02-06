@@ -4,14 +4,14 @@
 #include "PaperTiledFactory.h"
 #include "PT_Tileset.h"
 
-UPaperTiledFactory::UPaperTiledFactory()
+UTileSetAssetFactory::UTileSetAssetFactory()
 {
 	SupportedClass = UPT_Tileset::StaticClass();
 	bCreateNew = true;
 	bEditAfterNew = true;
 }
 
-UObject* UPaperTiledFactory::FactoryCreateNew(
+UObject* UTileSetAssetFactory::FactoryCreateNew(
 	UClass* Class,
 	UObject* InParent,
 	FName Name,
