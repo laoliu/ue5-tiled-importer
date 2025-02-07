@@ -17,4 +17,6 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = "Paper Tiled")
 	FFilePath TiledTileset;
+
+	void PostEditChangeProperty(struct FPropertyChangedEvent& PropertyChangedEvent);
 };
