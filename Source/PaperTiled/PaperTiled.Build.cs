@@ -25,7 +25,8 @@ public class PaperTiled : ModuleRules
 		PublicDependencyModuleNames.AddRange(
 			new string[]
 			{
-				"Core"
+				"Core",
+                "XmlParser"
 				// ... add other public dependencies that you statically link with here ...
 			}
 			);
@@ -38,7 +39,8 @@ public class PaperTiled : ModuleRules
 				"Engine",
 				"Slate",
 				"SlateCore",
-				"Paper2D"
+				"Paper2D",
+                "AssetTools"
 				// ... add private dependencies that you statically link with here ...	
 			}
 			);

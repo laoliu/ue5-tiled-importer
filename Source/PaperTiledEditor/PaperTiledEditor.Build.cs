@@ -28,8 +28,8 @@ public class PaperTiledEditor : ModuleRules
                 "Core",
                 "CoreUObject",
                 "Engine",
-                "UnrealEd",
-                "PaperTiled"
+                "PaperTiled",
+                "UnrealEd"
 				// ... add other public dependencies that you statically link with here ...
 			}
             );

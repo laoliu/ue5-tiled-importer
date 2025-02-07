@@ -18,5 +18,6 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Paper Tiled")
 	FFilePath TiledTileset;
 
+	void ImportTexture(FString TileSetName);
 	void PostEditChangeProperty(struct FPropertyChangedEvent& PropertyChangedEvent);
 };
