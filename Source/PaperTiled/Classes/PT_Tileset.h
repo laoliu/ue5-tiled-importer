@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "PaperTileSet.h"
+#include "AssetRegistry/AssetRegistryModule.h"
 #include "PT_Tileset.generated.h"
 
 // A Paper 2D Tile Set extended to handle tile set data from
@@ -18,6 +19,16 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Paper Tiled")
 	FFilePath TiledTileset;
 
-	void ImportTexture(FString TileSetName);
+	static UTexture2D* GetExistingTextureAsset(
+		FAssetRegistryModule& AssetRegistryModule,
+		FString AssetPath,
+		FString ImageFileName
+	);
+
+private:
+
+	UTexture2D* ImportTexture(FString ImageSource);
+	UTexture2D* ImportTexture(FString RelativeImageSource, FString InTileSetPath);
+
 	void PostEditChangeProperty(struct FPropertyChangedEvent& PropertyChangedEvent);
 };

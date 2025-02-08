@@ -26,7 +26,8 @@ public class PaperTiled : ModuleRules
 			new string[]
 			{
 				"Core",
-                "XmlParser"
+                "XmlParser",
+				"UnrealEd"
 				// ... add other public dependencies that you statically link with here ...
 			}
 			);
