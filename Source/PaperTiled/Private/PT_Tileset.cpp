@@ -12,6 +12,8 @@
 #include "IContentBrowserSingleton.h"
 #include "ImageUtils.h"
 #include "ObjectTools.h"
+#include "Rendering/Texture2DResource.h"
+#include "AutomatedAssetImportData.h"
 
 #if WITH_EDITOR
 void UPT_Tileset::PostEditChangeProperty(
@@ -137,77 +139,26 @@ UTexture2D* UPT_Tileset::ImportTexture(FString RelativeImageSource, FString InTi
 UTexture2D* UPT_Tileset::ImportTexture(FString ImageSource)
 {
 	FAssetToolsModule& AssetToolsModule = FModuleManager::Get().LoadModuleChecked<FAssetToolsModule>("AssetTools");
-	FContentBrowserModule& ContentBrowserModule = FModuleManager::LoadModuleChecked<FContentBrowserModule>("ContentBrowser");
-	FAssetRegistryModule& AssetRegistryModule = FModuleManager::LoadModuleChecked<FAssetRegistryModule>(TEXT("AssetRegistry"));
-	IAssetRegistry& AssetRegistry = AssetRegistryModule.Get();
 
 	FString AssetPath = FPaths::GetPath(GetPathName());
 	FString ImageFileName = FPaths::GetBaseFilename(ImageSource);
-	FString ImageFileExtension = FPaths::GetExtension(ImageSource, true);
-
-	UTexture2D* ExistingTexture = GetExistingTextureAsset(AssetRegistryModule, AssetPath, ImageFileName);
-
-	if (ExistingTexture)
-	{
-		UE_LOGFMT(LogTemp, Warning, "A 2D Texture asset already exists with the same name: {Name}", ImageFileName);
-		return ExistingTexture;
-	}
-
-	const FString ObjectFileName = ImageFileName + '.' + ImageFileName;
-	const FString ObjectPath = FPaths::Combine(AssetPath, ObjectFileName);
-	const FString PackageName = FPackageName::ObjectPathToPackageName(ObjectPath);
-	const FString PackageFileName = FPackageName::LongPackageNameToFilename(
-		PackageName,
-		FPackageName::GetAssetPackageExtension()
-	);
+	FString PackageName = FPaths::Combine(AssetPath, ImageFileName);
 
 	UE_LOGFMT(LogTemp, Display, "Creating 2D Texture asset {PackageName}", PackageName);
 
-	UPackage* const NewPackage = CreatePackage(*PackageName);
-	NewPackage->FullyLoad();
+	TArray<FString> Filenames;
+	Filenames.Add(ImageSource);
 
-	FImage ImageInfo;
-	FImageUtils::LoadImage(*ImageSource, ImageInfo);
-	UTexture2D* NewTexture = FImageUtils::CreateTexture2DFromImage(ImageInfo);
-	NewTexture->Rename(nullptr, NewPackage, REN_DontCreateRedirectors);
-	NewTexture->SetFlags(NewTexture->GetFlags() | RF_Public | RF_Standalone);
-	NewTexture->AtomicallyClearFlags(RF_Transient);
-	NewTexture->Rename(*ImageFileName, nullptr, REN_DontCreateRedirectors);
-	
-	FObjectThumbnail NewThumbnail;
-	ThumbnailTools::RenderThumbnail(
-		NewTexture,
-		NewTexture->GetSizeX(),
-		NewTexture->GetSizeY(),
-		ThumbnailTools::EThumbnailTextureFlushMode::NeverFlush,
-		NULL,
-		&NewThumbnail
-	);
-	ThumbnailTools::CacheThumbnail(NewTexture->GetFullName(), &NewThumbnail, NewPackage);
+	UAutomatedAssetImportData* ImportSettings = NewObject<UAutomatedAssetImportData>(UAutomatedAssetImportData::StaticClass());
+	ImportSettings->bReplaceExisting = false;
+	ImportSettings->DestinationPath = AssetPath;
+	ImportSettings->Factory = NewObject<UTextureFactory>(UTextureFactory::StaticClass());
+	ImportSettings->FactoryName = UTextureFactory::StaticClass()->GetName();
+	ImportSettings->Filenames = Filenames;
 
-	NewPackage->ClearDirtyFlag();
-	AssetRegistry.AssetCreated(NewTexture);
-
-
-	FSavePackageArgs SaveArgs;
-	SaveArgs.TopLevelFlags = RF_Public | RF_Standalone;
-	SaveArgs.bForceByteSwapping = true;
-	SaveArgs.bWarnOfLongFilename = true;
-
-	if (!UPackage::SavePackage(
-		NewPackage,
-		NewTexture,
-		*PackageFileName,
-		SaveArgs
-	))
-	{
-		UE_LOGFMT(LogTemp, Error, "Failed to save Asset: {FileName}", *ImageFileName);
-		return NULL;
-	}
-
-	TArray<UObject*> Objects;
-	Objects.Add(NewTexture);
-	ContentBrowserModule.Get().SyncBrowserToAssets(Objects);
+	TArray<UObject*> NewAssets = AssetToolsModule.Get().ImportAssetsAutomated(ImportSettings);
+	UObject* NewAsset = NewAssets[0];
+	UTexture2D* NewTexture = Cast<UTexture2D>(NewAsset);
 
 	return NewTexture;
 }
