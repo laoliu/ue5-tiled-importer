@@ -26,9 +26,9 @@ void UPT_Tileset::PostEditChangeProperty(
 	{
 		FXmlFile TileSetFile(TiledTileset.FilePath);
 		FXmlNode* RootNode = TileSetFile.GetRootNode();
-		const FXmlNode* ImageNode = RootNode->GetFirstChildNode();
+		const FXmlNode* ImageNode = RootNode->FindChildNode("image");
 
-		if (RootNode->GetTag() != "tileset" || ImageNode->GetTag() != "image") {
+		if (RootNode->GetTag() != "tileset" || !ImageNode) {
 			return;
 		}
 
