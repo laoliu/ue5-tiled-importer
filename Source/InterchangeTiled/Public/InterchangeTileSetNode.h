@@ -21,6 +21,7 @@ public:
 	virtual bool SetAssetName(const FString& NewAssetName) override 
 	{
 		AssetName = NewAssetName;
+		return true;
 	}
 
 protected:
