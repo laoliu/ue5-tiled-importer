@@ -15,6 +15,8 @@ class INTERCHANGETILED_API UInterchangeTileSetFactoryNode : public UInterchangeF
 {
 	GENERATED_BODY()
 
+public:
+
 	virtual FString GetTypeName() const override
 	{
 		const FString TypeName = TEXT("TileSetFactoryNode");
