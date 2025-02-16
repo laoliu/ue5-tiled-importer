@@ -32,4 +32,7 @@ public:
 	virtual TArray<FString> GetSupportedFormats() const override;
 	virtual EInterchangeTranslatorType GetTranslatorType() const override;
 	virtual bool Translate(UInterchangeBaseNodeContainer& BaseNodeContainer) const override;
+
+private:
+	bool TranslateTexture(UInterchangeBaseNodeContainer& BaseNodeContainer) const;
 };

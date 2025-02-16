@@ -44,5 +44,40 @@ bool UInterchangeTsxTranslator::Translate(UInterchangeBaseNodeContainer& BaseNod
 {
 	UE_LOG(LogInterchangeTiledImport, Warning, TEXT("Calling TSX Translator"));
 
-	return false;
+	return TranslateTexture(BaseNodeContainer);
+}
+
+bool UInterchangeTsxTranslator::TranslateTexture(
+	UInterchangeBaseNodeContainer& BaseNodeContainer
+) const
+{
+	FString Filename = SourceData->GetFilename();
+	FPaths::NormalizeFilename(Filename);
+
+	if (!FPaths::FileExists(Filename))
+	{
+		return false;
+	}
+
+	UClass* Class = UInterchangeTexture2DNode::StaticClass();
+	if (!ensure(Class))
+	{
+		return false;
+	}
+
+	FString DisplayLabel = FPaths::GetBaseFilename(Filename);
+	FString NodeUID(Filename);
+
+	UInterchangeTextureNode* TextureNode = NewObject<UInterchangeTextureNode>(&BaseNodeContainer, Class);
+	if (!ensure(TextureNode))
+	{
+		return false;
+	}
+
+	TextureNode->InitializeNode(NodeUID, DisplayLabel, EInterchangeNodeContainerType::TranslatedAsset);
+	TextureNode->SetPayLoadKey(Filename);
+
+	BaseNodeContainer.AddNode(TextureNode);
+
+	return true;
 }
