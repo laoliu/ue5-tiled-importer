@@ -34,5 +34,13 @@ public:
 	virtual bool Translate(UInterchangeBaseNodeContainer& BaseNodeContainer) const override;
 
 private:
-	bool TranslateTexture(UInterchangeBaseNodeContainer& BaseNodeContainer) const;
+	bool TranslateTexture(
+		FString Filename,
+		UInterchangeBaseNodeContainer& BaseNodeContainer
+	) const;
+
+	bool TranslateTileSet(
+		FString Filename,
+		UInterchangeBaseNodeContainer& BaseNodeContainer
+	) const;
 };

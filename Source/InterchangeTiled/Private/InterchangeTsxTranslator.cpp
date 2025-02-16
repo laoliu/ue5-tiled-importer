@@ -4,6 +4,7 @@
 
 #include "InterchangeTexture2DNode.h"
 #include "InterchangeTiledModule.h"
+#include "InterchangeTileSetNode.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(InterchangeTsxTranslator)
 
@@ -44,13 +45,6 @@ bool UInterchangeTsxTranslator::Translate(UInterchangeBaseNodeContainer& BaseNod
 {
 	UE_LOG(LogInterchangeTiledImport, Warning, TEXT("Calling TSX Translator"));
 
-	return TranslateTexture(BaseNodeContainer);
-}
-
-bool UInterchangeTsxTranslator::TranslateTexture(
-	UInterchangeBaseNodeContainer& BaseNodeContainer
-) const
-{
 	FString Filename = SourceData->GetFilename();
 	FPaths::NormalizeFilename(Filename);
 
@@ -59,6 +53,14 @@ bool UInterchangeTsxTranslator::TranslateTexture(
 		return false;
 	}
 
+	return TranslateTexture(Filename, BaseNodeContainer);
+}
+
+bool UInterchangeTsxTranslator::TranslateTexture(
+	FString Filename,
+	UInterchangeBaseNodeContainer& BaseNodeContainer
+) const
+{
 	UClass* Class = UInterchangeTexture2DNode::StaticClass();
 	if (!ensure(Class))
 	{
@@ -66,7 +68,7 @@ bool UInterchangeTsxTranslator::TranslateTexture(
 	}
 
 	FString DisplayLabel = FPaths::GetBaseFilename(Filename);
-	FString NodeUID(Filename);
+	FString NodeUid(Filename);
 
 	UInterchangeTextureNode* TextureNode = NewObject<UInterchangeTextureNode>(&BaseNodeContainer, Class);
 	if (!ensure(TextureNode))
@@ -74,10 +76,38 @@ bool UInterchangeTsxTranslator::TranslateTexture(
 		return false;
 	}
 
-	TextureNode->InitializeNode(NodeUID, DisplayLabel, EInterchangeNodeContainerType::TranslatedAsset);
+	TextureNode->InitializeNode(NodeUid, DisplayLabel, EInterchangeNodeContainerType::TranslatedAsset);
 	TextureNode->SetPayLoadKey(Filename);
 
 	BaseNodeContainer.AddNode(TextureNode);
+
+	return true;
+}
+
+bool UInterchangeTsxTranslator::TranslateTileSet(
+	FString Filename,
+	UInterchangeBaseNodeContainer& BaseNodeContainer
+) const
+{
+	UClass* Class = UInterchangeTileSetNode::StaticClass();
+	if (!ensure(Class))
+	{
+		return false;
+	}
+
+	FString DisplayLabel = FPaths::GetBaseFilename(Filename) + "_tile_set";
+	FString NodeUid(Filename);
+
+	UInterchangeTextureNode* TileSetNode = NewObject<UInterchangeTextureNode>(&BaseNodeContainer, Class);
+	if (!ensure(TileSetNode))
+	{
+		return false;
+	}
+
+	TileSetNode->InitializeNode(NodeUid, DisplayLabel, EInterchangeNodeContainerType::TranslatedAsset);
+	TileSetNode->SetPayLoadKey(Filename);
+
+	BaseNodeContainer.AddNode(TileSetNode);
 
 	return true;
 }
