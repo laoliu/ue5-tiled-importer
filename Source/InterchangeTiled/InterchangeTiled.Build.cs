@@ -23,7 +23,8 @@ public class InterchangeTiled: ModuleRules
             new string[]
             {
                 "InterchangeCommonParser",
-                "InterchangeMessages"
+                "InterchangeMessages",
+                "Paper2D",
             }
         );
     }
