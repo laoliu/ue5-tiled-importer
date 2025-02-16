@@ -24,7 +24,7 @@ UInterchangeFactoryBase::FImportAssetResult UInterchangeTileSetFactory::BeginImp
 		Message->SourceAssetName = Arguments.SourceData->GetFilename();
 		Message->DestinationAssetName = Arguments.AssetName;
 		Message->AssetType = GetFactoryClass();
-		Message->Text = FText::Format(LOCTEXT("TileSetFact_CouldNotCreateMat", "UInterchangeTextureFactory: Could not create tile set asset %s. Reason: %s"), FText::FromString(Arguments.AssetName), Info);
+		Message->Text = FText::Format(LOCTEXT("TileSetFact_CouldNotCreateMat", "UInterchangeTileSetFactory: Could not create tile set asset %s. Reason: %s"), FText::FromString(Arguments.AssetName), Info);
 		ImportAssetResult.bIsFactorySkipAsset = true;
 	};
 
