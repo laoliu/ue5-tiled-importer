@@ -1,35 +1,43 @@
 {
-	"FileVersion": 3,
-	"Version": 1,
-	"VersionName": "1.0",
-	"FriendlyName": "PaperTiled",
-	"Description": "Convert Tiled files into Paper2D tilesets and tile maps",
-	"Category": "Other",
-	"CreatedBy": "Joe Scharnitzke",
-	"CreatedByURL": "",
-	"DocsURL": "",
-	"MarketplaceURL": "",
-	"SupportURL": "",
-	"CanContainContent": true,
-	"IsBetaVersion": false,
-	"IsExperimentalVersion": false,
-	"Installed": false,
-	"Modules": [
-		{
-			"Name": "PaperTiled",
-			"Type": "Runtime",
-			"LoadingPhase": "Default"
-		},
-		{
-			"Name": "PaperTiledEditor",
-			"Type": "Editor",
-			"LoadingPhase": "PostEngineInit"
-		}
-	],
-	"Plugins": [
-		{
-			"Name": "Paper2D",
-			"Enabled": true
-		}
-	]
+  "FileVersion": 3,
+  "Version": 1,
+  "VersionName": "1.0",
+  "Modules": [
+    {
+      "Name": "PaperTiled",
+      "Type": "Runtime",
+      "LoadingPhase": "Default"
+    },
+    {
+        "Name": "PaperTiledEditor",
+        "Type": "Editor",
+        "LoadingPhase": "PostEngineInit"
+    },
+    {
+        "Name": "InterchangeTiled",
+        "Type": "Runtime",
+        "LoadingPhase": "PreDefault"
+    }
+  ],
+  "FriendlyName": "PaperTiled",
+  "Description": "Convert Tiled files into Paper2D tilesets and tile maps",
+  "Category": "Other",
+  "CreatedBy": "Joe Scharnitzke",
+  "CreatedByURL": "",
+  "DocsURL": "",
+  "MarketplaceURL": "",
+  "SupportURL": "",
+  "CanContainContent": true,
+  "Installed": false,
+  "IsBetaVersion": false,
+  "Plugins": [
+    {
+        "Name": "Paper2D",
+        "Enabled": true
+    },
+    {
+        "Name": "Interchange",
+        "Enabled": true
+    }
+  ]
 }
