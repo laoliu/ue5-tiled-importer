@@ -4,7 +4,6 @@
 #include "PT_Tileset.h"
 #include "Logging/StructuredLog.h"
 #include "Modules/ModuleManager.h"
-#include "XmlFile.h"
 #include "AssetToolsModule.h"
 #include "ContentBrowserModule.h"
 #include "Factories/TextureFactory.h"
@@ -51,6 +50,9 @@ void UPT_Tileset::PostEditChangeProperty(
 			ImportTexture(ImageSource);
 
 		SetTileSheetTexture(Texture);
+		Super::PostEditChangeProperty(PropertyChangedEvent);
+
+		PopulateTileMetadata(RootNode->GetChildrenNodes());
 	}
 }
 #endif
@@ -161,4 +163,51 @@ UTexture2D* UPT_Tileset::ImportTexture(FString ImageSource)
 	UTexture2D* NewTexture = Cast<UTexture2D>(NewAsset);
 
 	return NewTexture;
+}
+
+void UPT_Tileset::PopulateTileMetadata(TArray<FXmlNode*> TilesetNodes)
+{
+
+	for (const FXmlNode* Node : TilesetNodes)
+	{
+		if (Node->GetTag() == "tile")
+		{
+			const uint32 TileId = FCString::Atoi(*Node->GetAttribute("id"));
+			const FXmlNode* ObjectGroupNode = Node->FindChildNode("objectgroup");
+
+			if (!ObjectGroupNode)
+			{
+				continue;
+			}
+
+			const FXmlNode* ObjectNode = ObjectGroupNode->FindChildNode("object");
+
+			if (!ObjectNode)
+			{
+				continue;
+			}
+
+			FVector2D RectanglePosition(
+				FCString::Atoi(*ObjectNode->GetAttribute("x")),
+				FCString::Atoi(*ObjectNode->GetAttribute("y"))
+			);
+
+			FVector2D RectangleSize(
+				FCString::Atod(*ObjectNode->GetAttribute("width")),
+				FCString::Atod(*ObjectNode->GetAttribute("height"))
+			);
+
+			FSpriteGeometryCollection CollisionData;
+			CollisionData.AddRectangleShape(
+				RectanglePosition,
+				RectangleSize
+			);
+			
+			FPaperTileMetadata TileMetadata;
+			TileMetadata.CollisionData = CollisionData;
+
+			FPaperTileMetadata* CurrentTileMetadata = GetMutableTileMetadata(TileId);
+			*CurrentTileMetadata = TileMetadata;
+		}
+	}
 }

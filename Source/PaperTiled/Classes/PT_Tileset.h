@@ -2,9 +2,10 @@
 
 #pragma once
 
+#include "AssetRegistry/AssetRegistryModule.h"
 #include "CoreMinimal.h"
 #include "PaperTileSet.h"
-#include "AssetRegistry/AssetRegistryModule.h"
+#include "XmlFile.h"
 #include "PT_Tileset.generated.h"
 
 // A Paper 2D Tile Set extended to handle tile set data from
@@ -29,6 +30,7 @@ private:
 
 	UTexture2D* ImportTexture(FString ImageSource);
 	UTexture2D* ImportTexture(FString RelativeImageSource, FString InTileSetPath);
+	void PopulateTileMetadata(TArray<FXmlNode*> TilesetNodes);
 
 	void PostEditChangeProperty(struct FPropertyChangedEvent& PropertyChangedEvent);
 };
