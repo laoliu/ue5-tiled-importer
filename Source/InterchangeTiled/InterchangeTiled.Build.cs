@@ -16,6 +16,7 @@ public class InterchangeTiled: ModuleRules
                 "InterchangeEngine",
                 "InterchangeFactoryNodes",
                 "InterchangeNodes",
+                "InterchangePipelines",
                 "XmlParser",
             }
         );
