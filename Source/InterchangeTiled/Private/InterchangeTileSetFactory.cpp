@@ -1,10 +1,14 @@
 #include "InterchangeTileSetFactory.h"
 
+#include "AssetToolsModule.h"
+#include "AutomatedAssetImportData.h"
+#include "Factories/TextureFactory.h"
 #include "InterchangeSourceData.h"
 #include "InterchangeTextureFactoryNode.h"
 #include "InterchangeTileSetFactoryNode.h"
+#include "Logging/StructuredLog.h"
+#include "Modules/ModuleManager.h"
 #include "Nodes/InterchangeBaseNodeContainer.h"
-#include "XmlFile.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(InterchangeTileSetFactory)
 
@@ -79,29 +83,15 @@ void UInterchangeTileSetFactory::SetupObject_GameThread(const FSetupObjectParams
 {
 	if (Arguments.FactoryNode->GetClass() != UInterchangeTileSetFactoryNode::StaticClass())
 	{
+		UE_LOGFMT(LogTemp, Warning, "Invalid Factory Node class: {ClassName}", Arguments.FactoryNode->GetClass()->GetName());
+
 		return;
 	}
 
-	// load the dependency texture
-	FString TextureFactoryUid;
-	Arguments.FactoryNode->GetFactoryDependency(0, TextureFactoryUid);
-
-	UInterchangeFactoryBaseNode* TextureFactoryNode = Arguments.NodeContainer->GetFactoryNode(TextureFactoryUid);
-
-	if (TextureFactoryNode->GetClass() != UInterchangeTextureFactoryNode::StaticClass())
-	{
-		return;
-	}
-
-	FSoftObjectPath TextureObjectPath;
-	TextureFactoryNode->GetCustomReferenceObject(TextureObjectPath);
-
-	UTexture2D* Texture = Cast<UTexture2D>(TextureObjectPath.TryLoad());
-
-	if (!Texture)
-	{
-		return;
-	}
+	UTexture2D* Texture = LoadOrCreateTextureAsset(
+		Arguments.FactoryNode,
+		FPaths::GetPath(Arguments.ImportedObject->GetPathName())
+	);
 
 	FXmlFile TileSetFile(Arguments.SourceData->GetFilename());
 	FXmlNode* RootNode = TileSetFile.GetRootNode();
@@ -120,10 +110,107 @@ void UInterchangeTileSetFactory::SetupObject_GameThread(const FSetupObjectParams
 	TileSet->SetMargin(FCString::Atoi(*ImageMargin));
 	TileSet->SetPerTileSpacing(FCString::Atoi(*TileSpacing));
 	TileSet->SetTileSheetTexture(Texture);
+	TileSet->PostEditChange();
 
-	UInterchangeResultError_Generic* Message = AddMessage<UInterchangeResultError_Generic>();
+	PopulateTileMetadata(RootNode->GetChildrenNodes(), TileSet);
+}
 
+void UInterchangeTileSetFactory::BuildObject_GameThread(const FSetupObjectParams& Arguments, bool& OutPostEditchangeCalled)
+{
+	Super::BuildObject_GameThread(Arguments, OutPostEditchangeCalled);
+
+	UPaperTileSet* TileSet = Cast<UPaperTileSet>(Arguments.ImportedObject);
 	const FPaperTileMetadata* TileMetadata = TileSet->GetTileMetadata(0);
+}
 
-	Message->Text = FText::Format(FText::FromString("Paper tile metadata exists: %s"), FText::FromString(TileMetadata ? "Yes" : "No"));
+UTexture2D* UInterchangeTileSetFactory::LoadOrCreateTextureAsset(
+	UInterchangeFactoryBaseNode* FactoryNode,
+	FString PackagePath
+)
+{
+	FAssetToolsModule& AssetToolsModule = FModuleManager::Get().LoadModuleChecked<FAssetToolsModule>("AssetTools");
+
+	UInterchangeTileSetFactoryNode* TileSetFactoryNode = Cast<UInterchangeTileSetFactoryNode>(FactoryNode);
+
+	check(TileSetFactoryNode);
+
+	UTexture2D* Texture = nullptr;
+
+	FString TextureFilename;
+	TileSetFactoryNode->GetAttribute("TextureFilename", TextureFilename);
+
+	if (!TextureFilename.Len())
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Invalid Texture filename"));
+	}
+
+	FString Filename = FPaths::GetBaseFilename(TextureFilename);
+	TArray<FString> Filenames;
+	Filenames.Add(TextureFilename);
+
+	UAutomatedAssetImportData* ImportSettings = NewObject<UAutomatedAssetImportData>(UAutomatedAssetImportData::StaticClass());
+	ImportSettings->bReplaceExisting = false;
+	ImportSettings->DestinationPath = PackagePath;
+	ImportSettings->Factory = NewObject<UTextureFactory>(UTextureFactory::StaticClass());
+	ImportSettings->FactoryName = UTextureFactory::StaticClass()->GetName();
+	ImportSettings->Filenames = Filenames;
+
+	TArray<UObject*> NewAssets = AssetToolsModule.Get().ImportAssetsAutomated(ImportSettings);
+	UObject* NewAsset = NewAssets[0];
+	Texture = Cast<UTexture2D>(NewAsset);
+
+	return Texture;
+}
+
+void UInterchangeTileSetFactory::PopulateTileMetadata(TArray<FXmlNode*> TilesetNodes, UPaperTileSet* TileSet)
+{
+	for (const FXmlNode* Node : TilesetNodes)
+	{
+		if (Node->GetTag() == "tile")
+		{
+			const uint32 TileId = FCString::Atoi(*Node->GetAttribute("id"));
+			const FXmlNode* ObjectGroupNode = Node->FindChildNode("objectgroup");
+
+			if (!ObjectGroupNode)
+			{
+				continue;
+			}
+
+			const FXmlNode* ObjectNode = ObjectGroupNode->FindChildNode("object");
+
+			if (!ObjectNode)
+			{
+				continue;
+			}
+
+			FIntPoint TileSize = TileSet->GetTileSize();
+			double TileWidth = TileSize.X;
+			double TileHeight = TileSize.Y;
+
+			double TiledX = FCString::Atod(*ObjectNode->GetAttribute("x"));
+			double TiledY = FCString::Atod(*ObjectNode->GetAttribute("y"));
+			double BoxWidth = FCString::Atod(*ObjectNode->GetAttribute("width"));
+			double BoxHeight = FCString::Atod(*ObjectNode->GetAttribute("height"));
+
+			// Convert from Tiled coordinates (collision box top left) to
+			// Unreal coordinates (collision box center).
+			double UnrealX = TiledX - TileWidth / 2 + BoxWidth / 2;
+			double UnrealY = TiledY - TileHeight / 2 + BoxHeight / 2;
+
+			FVector2D RectanglePosition(UnrealX, UnrealY);
+			FVector2D RectangleSize(BoxWidth, BoxHeight);
+
+			FSpriteGeometryCollection CollisionData;
+			CollisionData.AddRectangleShape(
+				RectanglePosition,
+				RectangleSize
+			);
+
+			FPaperTileMetadata TileMetadata;
+			TileMetadata.CollisionData = CollisionData;
+
+			FPaperTileMetadata* CurrentTileMetadata = TileSet->GetMutableTileMetadata(TileId);
+			*CurrentTileMetadata = TileMetadata;
+		}
+	}
 }

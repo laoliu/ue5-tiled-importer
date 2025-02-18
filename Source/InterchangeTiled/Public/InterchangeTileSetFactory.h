@@ -5,6 +5,8 @@
 #include "CoreMinimal.h"
 #include "InterchangeFactoryBase.h"
 #include "PaperTileSet.h"
+#include "XmlFile.h"
+
 #include "InterchangeTileSetFactory.generated.h"
 
 /**
@@ -28,4 +30,13 @@ private:
 	virtual FImportAssetResult BeginImportAsset_GameThread(const FImportAssetObjectParams& Arguments) override;
 
 	virtual void SetupObject_GameThread(const FSetupObjectParams& Arguments) override;
+
+	virtual void BuildObject_GameThread(const FSetupObjectParams& Arguments, bool& OutPostEditchangeCalled) override;
+
+	virtual UTexture2D* LoadOrCreateTextureAsset(
+		UInterchangeFactoryBaseNode* FactoryNode,
+		FString PackagePath
+	);
+
+	virtual void PopulateTileMetadata(TArray<FXmlNode*> TilesetNodes, UPaperTileSet* TileSet);
 };
