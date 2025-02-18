@@ -1,7 +1,8 @@
 #include "InterchangeTsxPipeline.h"
 
-#include "PaperTileSet.h"
 #include "InterchangeGenericTexturePipeline.h"
+#include "Logging/StructuredLog.h"
+#include "PaperTileSet.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(InterchangeTsxPipeline)
 
@@ -9,7 +10,6 @@
 
 UInterchangeTsxPipeline::UInterchangeTsxPipeline()
 {
-	TexturePipeline = CreateDefaultSubobject<UInterchangeGenericTexturePipeline>("TexturePipeline");
 }
 
 FString UInterchangeTsxPipeline::GetPipelineCategory(UClass* AssetClass)
@@ -19,34 +19,46 @@ FString UInterchangeTsxPipeline::GetPipelineCategory(UClass* AssetClass)
 
 void UInterchangeTsxPipeline::GetSupportAssetClasses(TArray<UClass*>& PipelineSupportAssetClasses) const
 {
-	if (TexturePipeline)
-	{
-		TexturePipeline->GetSupportAssetClasses(PipelineSupportAssetClasses);
-	}
-
 	PipelineSupportAssetClasses.Add(UPaperTileSet::StaticClass());
 }
 
 void UInterchangeTsxPipeline::ExecutePipeline(UInterchangeBaseNodeContainer* InBaseNodeContainer, const TArray<UInterchangeSourceData*>& InSourceDatas, const FString& ContentBasePath)
 {
+	UE_LOG(LogTemp, Warning, TEXT("Executing TSX Pipeline"));
+
 	if (!InBaseNodeContainer)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("UInterchangeTsxPipeline: Cannot execute pre-import pipeline because InBaseNodeContrainer is null"));
+		UE_LOG(LogTemp, Warning, TEXT("UInterchangeTsxPipeline: Cannot execute pre-import pipeline because InBaseNodeContainer is null"));
 		return;
 	}
 
 	ensure(Results);
-	{
-		if (TexturePipeline)
-		{
-			TexturePipeline->SetResultsContainer(Results);
-		}
-	}
 
 	BaseNodeContainer = InBaseNodeContainer;
 
-	if (TexturePipeline)
+	TArray<FString> TileSetNodeUids;
+	BaseNodeContainer->GetNodes(UInterchangeTileSetNode::StaticClass(), TileSetNodeUids);
+
+	for (FString TileSetNodeUid : TileSetNodeUids)
 	{
-		TexturePipeline->ScriptedExecutePipeline(InBaseNodeContainer, InSourceDatas, ContentBasePath);
+		const UInterchangeBaseNode* Node = BaseNodeContainer->GetNode(TileSetNodeUid);
+		const UInterchangeTileSetNode* TileSetNode = Cast<UInterchangeTileSetNode>(Node);
+
+		FString TextureFilename;
+		TileSetNode->GetAttribute("TextureFilename", TextureFilename);
+
+		UInterchangeTileSetFactoryNode* TileSetFactoryNode = NewObject<UInterchangeTileSetFactoryNode>(
+			BaseNodeContainer,
+			UInterchangeTileSetFactoryNode::StaticClass()
+		);
+
+		TileSetFactoryNode->InitializeNode(
+			UInterchangeFactoryBaseNode::BuildFactoryNodeUid(TileSetNodeUid),
+			TileSetNode->GetDisplayLabel() + "_tile_set",
+			EInterchangeNodeContainerType::FactoryData
+		);
+		TileSetFactoryNode->SetAttribute("TextureFilename", TextureFilename);
+
+		BaseNodeContainer->AddNode(TileSetFactoryNode);
 	}
 }

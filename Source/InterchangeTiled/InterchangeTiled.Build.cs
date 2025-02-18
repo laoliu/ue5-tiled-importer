@@ -17,6 +17,7 @@ public class InterchangeTiled: ModuleRules
                 "InterchangeFactoryNodes",
                 "InterchangeNodes",
                 "InterchangePipelines",
+                "UnrealEd",
                 "XmlParser",
             }
         );
@@ -24,6 +25,7 @@ public class InterchangeTiled: ModuleRules
         PrivateDependencyModuleNames.AddRange(
             new string[]
             {
+                "AssetTools",
                 "InterchangeCommonParser",
                 "InterchangeMessages",
                 "Paper2D",
