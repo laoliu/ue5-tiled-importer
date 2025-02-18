@@ -27,19 +27,19 @@ class INTERCHANGETILED_API UInterchangeTsxTranslator : public UInterchangeTransl
 public:
 
 	// inherited methods
+	virtual bool CanImportSourceData(const UInterchangeSourceData* InSourceData) const;
+	virtual bool IsThreadSafe() const { return false; }
 	virtual EInterchangeTranslatorAssetType GetSupportedAssetTypes() const override;
 	virtual TArray<FString> GetSupportedFormats() const override;
 	virtual EInterchangeTranslatorType GetTranslatorType() const override;
 	virtual bool Translate(UInterchangeBaseNodeContainer& BaseNodeContainer) const override;
 
 private:
-	bool TranslateTexture(
-		FString Filename,
-		UInterchangeBaseNodeContainer& BaseNodeContainer
-	) const;
 
 	bool TranslateTileSet(
 		FString Filename,
 		UInterchangeBaseNodeContainer& BaseNodeContainer
 	) const;
+
+	static FString GetTexturePathFromSourceFilename(FString Filename);
 };
