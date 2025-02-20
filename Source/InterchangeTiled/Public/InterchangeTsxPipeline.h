@@ -24,9 +24,6 @@ public:
 	/** The name of the pipeline that will be display in the import dialog. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Assets", meta = (StandAlonePipelineProperty = "True", PipelineInternalEditionData = "True"))
 	FString PipelineDisplayName;
-	
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Instanced, Category = "Textures")
-	TObjectPtr<UInterchangeGenericTexturePipeline> TexturePipeline;
 
 	virtual void GetSupportAssetClasses(TArray<UClass*>& PipelineSupportAssetClasses) const override;
 
