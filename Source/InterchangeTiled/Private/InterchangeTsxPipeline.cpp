@@ -6,8 +6,6 @@
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(InterchangeTsxPipeline)
 
-#define LOCTEXT_NAMESPACE "InterchangeTsxPipeline"
-
 UInterchangeTsxPipeline::UInterchangeTsxPipeline()
 {
 }

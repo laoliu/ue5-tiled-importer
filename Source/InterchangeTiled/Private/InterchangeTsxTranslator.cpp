@@ -12,8 +12,6 @@
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(InterchangeTsxTranslator)
 
-#define LOCTEXT_NAMESPACE "InterchangeTsxTranslator"
-
 // global variable to enable/disable TSX import from the Unreal console
 static bool bGInterchangeEnableTsxImport = true;
 static FAutoConsoleVariableRef CCvarInterchangeEnableTsxImport(

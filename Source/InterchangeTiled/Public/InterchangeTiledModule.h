@@ -5,6 +5,8 @@
 
 DECLARE_LOG_CATEGORY_EXTERN(LogInterchangeTiledImport, Log, All);
 
+#define LOCTEXT_NAMESPACE "InterchangeTiled"
+
 class FInterchangeTiled : public FDefaultModuleImpl
 {
 public:

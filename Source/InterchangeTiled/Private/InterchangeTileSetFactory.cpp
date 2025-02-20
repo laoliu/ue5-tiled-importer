@@ -5,14 +5,13 @@
 #include "Factories/TextureFactory.h"
 #include "InterchangeSourceData.h"
 #include "InterchangeTextureFactoryNode.h"
+#include "InterchangeTiledModule.h"
 #include "InterchangeTileSetFactoryNode.h"
 #include "Logging/StructuredLog.h"
 #include "Modules/ModuleManager.h"
 #include "Nodes/InterchangeBaseNodeContainer.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(InterchangeTileSetFactory)
-
-#define LOCTEXT_NAMESPACE "InterchangeTileSetFactory"
 
 UInterchangeFactoryBase::FImportAssetResult UInterchangeTileSetFactory::BeginImportAsset_GameThread(const FImportAssetObjectParams& Arguments)
 {
