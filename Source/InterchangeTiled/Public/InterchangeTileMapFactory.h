@@ -26,4 +26,6 @@ public:
 private:
 
 	virtual FImportAssetResult BeginImportAsset_GameThread(const FImportAssetObjectParams& Arguments) override;
+
+	virtual void SetupObject_GameThread(const FSetupObjectParams& Arguments) override;
 };
