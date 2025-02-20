@@ -19,8 +19,7 @@ public:
 
 	virtual FString GetTypeName() const override
 	{
-		const FString TypeName = TEXT("TileSetFactoryNode");
-		return TypeName;
+		return TEXT("TileSetFactoryNode");
 	}
 
 	virtual UClass* GetObjectClass() const override
