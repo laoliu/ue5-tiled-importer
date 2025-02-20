@@ -4,13 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "Nodes/InterchangeBaseNode.h"
-#include "InterchangeTmxNode.generated.h"
+#include "InterchangeTileMapNode.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class INTERCHANGETILED_API UInterchangeTmxNode : public UInterchangeBaseNode
+class INTERCHANGETILED_API UInterchangeTileMapNode : public UInterchangeBaseNode
 {
 	GENERATED_BODY()
 	
