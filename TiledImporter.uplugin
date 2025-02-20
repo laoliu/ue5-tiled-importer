@@ -4,23 +4,13 @@
   "VersionName": "1.0",
   "Modules": [
     {
-      "Name": "PaperTiled",
-      "Type": "Runtime",
-      "LoadingPhase": "Default"
-    },
-    {
-        "Name": "PaperTiledEditor",
-        "Type": "Editor",
-        "LoadingPhase": "PostEngineInit"
-    },
-    {
         "Name": "InterchangeTiled",
         "Type": "Runtime",
         "LoadingPhase": "PreDefault"
     }
   ],
-  "FriendlyName": "PaperTiled",
-  "Description": "Convert Tiled files into Paper2D tilesets and tile maps",
+  "FriendlyName": "TiledImporter",
+  "Description": "Convert Tiled TSX and TMX files into Paper2D Tile Sets and Tile Maps in Unreal Engine 5",
   "Category": "Other",
   "CreatedBy": "Joe Scharnitzke",
   "CreatedByURL": "",
