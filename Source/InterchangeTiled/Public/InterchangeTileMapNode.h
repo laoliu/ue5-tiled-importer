@@ -13,5 +13,20 @@ UCLASS()
 class INTERCHANGETILED_API UInterchangeTileMapNode : public UInterchangeBaseNode
 {
 	GENERATED_BODY()
+
+public:
+	virtual FString GetTypeName() const override;
+	virtual FString GetAssetName() const override { return AssetName; }
+
+	virtual bool SetAssetName(const FString& NewAssetName) override
+	{
+		AssetName = NewAssetName;
+		return true;
+	}
+
+protected:
+
+	UPROPERTY(EditAnywhere)
+	FString AssetName;
 	
 };

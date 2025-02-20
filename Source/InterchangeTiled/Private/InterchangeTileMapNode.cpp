@@ -3,3 +3,7 @@
 
 #include "InterchangeTileMapNode.h"
 
+FString UInterchangeTileMapNode::GetTypeName() const
+{
+	return TEXT("TileMapNode");
+}
