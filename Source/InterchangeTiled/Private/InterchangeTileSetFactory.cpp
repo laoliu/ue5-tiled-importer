@@ -86,7 +86,7 @@ void UInterchangeTileSetFactory::SetupObject_GameThread(const FSetupObjectParams
 {
 	if (Arguments.FactoryNode->GetClass() != UInterchangeTileSetFactoryNode::StaticClass())
 	{
-		UE_LOGFMT(LogTemp, Warning, "Invalid Factory Node class: {ClassName}", Arguments.FactoryNode->GetClass()->GetName());
+		UE_LOGFMT(LogInterchangeTiledImport, Warning, "Invalid Factory Node class: {ClassName}", Arguments.FactoryNode->GetClass()->GetName());
 
 		return;
 	}
@@ -145,7 +145,7 @@ UTexture2D* UInterchangeTileSetFactory::LoadOrCreateTextureAsset(
 
 	if (!TextureFilename.Len())
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Invalid Texture filename"));
+		UE_LOG(LogInterchangeTiledImport, Warning, TEXT("Invalid Texture filename"));
 	}
 
 	FString Filename = FPaths::GetBaseFilename(TextureFilename);
