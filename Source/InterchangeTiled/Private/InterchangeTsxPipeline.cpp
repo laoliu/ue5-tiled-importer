@@ -20,10 +20,12 @@ void UInterchangeTsxPipeline::GetSupportAssetClasses(TArray<UClass*>& PipelineSu
 	PipelineSupportAssetClasses.Add(UPaperTileSet::StaticClass());
 }
 
-void UInterchangeTsxPipeline::ExecutePipeline(UInterchangeBaseNodeContainer* InBaseNodeContainer, const TArray<UInterchangeSourceData*>& InSourceDatas, const FString& ContentBasePath)
+void UInterchangeTsxPipeline::ExecutePipeline(
+	UInterchangeBaseNodeContainer* InBaseNodeContainer, 
+	const TArray<UInterchangeSourceData*>& InSourceDatas, 
+	const FString& ContentBasePath
+)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Executing TSX Pipeline"));
-
 	if (!InBaseNodeContainer)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("UInterchangeTsxPipeline: Cannot execute pre-import pipeline because InBaseNodeContainer is null"));
