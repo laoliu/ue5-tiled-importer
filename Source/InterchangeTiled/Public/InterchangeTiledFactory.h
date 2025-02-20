@@ -15,13 +15,14 @@ class INTERCHANGETILED_API UInterchangeTiledFactory : public UInterchangeFactory
 	GENERATED_BODY()
 
 protected:
-
+	// standardized error logging for use in BeginImportAsset
 	virtual void LogAssetCreationError(
 		const FImportAssetObjectParams& Arguments,
 		const FText& Info, 
 		FImportAssetResult& ImportAssetResult
 	);
 
+	// standardized error logging for use in SetupObject
 	virtual void LogAssetSetupError(
 		const FSetupObjectParams& Arguments,
 		const FText& Info,
