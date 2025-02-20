@@ -1,9 +1,8 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
 #include "InterchangeFactoryBase.h"
+#include "InterchangeTiledFactory.h"
 #include "PaperTileSet.h"
 #include "XmlFile.h"
 
@@ -13,7 +12,7 @@
  * 
  */
 UCLASS()
-class INTERCHANGETILED_API UInterchangeTileSetFactory : public UInterchangeFactoryBase
+class INTERCHANGETILED_API UInterchangeTileSetFactory : public UInterchangeTiledFactory
 {
 	GENERATED_BODY()
 	

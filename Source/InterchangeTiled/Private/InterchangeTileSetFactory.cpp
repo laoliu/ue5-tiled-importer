@@ -20,27 +20,26 @@ UInterchangeFactoryBase::FImportAssetResult UInterchangeTileSetFactory::BeginImp
 	FImportAssetResult ImportAssetResult;
 	UPaperTileSet* TileSet = nullptr;
 
-	// lambda to standardize log message when asset creation fails
-	auto CouldNotCreateTileSetLog = [this, &Arguments, &ImportAssetResult](const FText& Info)
-	{
-		UInterchangeResultError_Generic* Message = AddMessage<UInterchangeResultError_Generic>();
-		Message->SourceAssetName = Arguments.SourceData->GetFilename();
-		Message->DestinationAssetName = Arguments.AssetName;
-		Message->AssetType = GetFactoryClass();
-		Message->Text = FText::Format(LOCTEXT("TileSetFact_CouldNotCreateMat", "UInterchangeTileSetFactory: Could not create tile set asset %s. Reason: %s"), FText::FromString(Arguments.AssetName), Info);
-		ImportAssetResult.bIsFactorySkipAsset = true;
-	};
-
 	if (!Arguments.AssetNode)
 	{
-		CouldNotCreateTileSetLog(LOCTEXT("TileSetFactory_AssetNodeNull", "Asset node parameter is null."));
+		LogAssetCreationError(
+			Arguments,
+			LOCTEXT("TileSetFactory_AssetNodeNull", "Asset node parameter is null."),
+			ImportAssetResult
+		);
+
 		return ImportAssetResult;
 	}
 
 	const UClass* TileSetClass = Arguments.AssetNode->GetObjectClass();
 	if (!TileSetClass || !TileSetClass->IsChildOf(UPaperTileSet::StaticClass()))
 	{
-		CouldNotCreateTileSetLog(LOCTEXT("TileSetFactory_NodeClassMissmatch", "Asset node parameter class doesn't derive from UPaperTileSet."));
+		LogAssetCreationError(
+			Arguments,
+			LOCTEXT("TileSetFactory_NodeClassMissmatch", "Asset node parameter class doesn't derive from UPaperTileSet."),
+			ImportAssetResult
+		);
+
 		return ImportAssetResult;
 	}
 
@@ -69,7 +68,12 @@ UInterchangeFactoryBase::FImportAssetResult UInterchangeTileSetFactory::BeginImp
 
 	if (!TileSet)
 	{
-		CouldNotCreateTileSetLog(LOCTEXT("TileSetFactory_TileSetCreateFail", "Tile Set creation failed."));
+		LogAssetCreationError(
+			Arguments,
+			LOCTEXT("TileSetFactory_TileSetCreateFail", "Tile Set creation failed."),
+			ImportAssetResult
+		);
+
 		return ImportAssetResult;
 	}
 
