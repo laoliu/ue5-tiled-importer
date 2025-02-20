@@ -99,7 +99,6 @@ void UInterchangeTileSetFactory::SetupObject_GameThread(const FSetupObjectParams
 	FXmlFile TileSetFile(Arguments.SourceData->GetFilename());
 	FXmlNode* RootNode = TileSetFile.GetRootNode();
 
-	FString TileSetName = RootNode->GetAttribute("name");
 	FString TileWidth = RootNode->GetAttribute("tilewidth");
 	FString TileHeight = RootNode->GetAttribute("tileheight");
 	FString TileSpacing = RootNode->GetAttribute("spacing");
@@ -117,14 +116,6 @@ void UInterchangeTileSetFactory::SetupObject_GameThread(const FSetupObjectParams
 	TileSet->PostEditChange();
 
 	PopulateTileMetadata(RootNode->GetChildrenNodes(), TileSet);
-}
-
-void UInterchangeTileSetFactory::BuildObject_GameThread(const FSetupObjectParams& Arguments, bool& OutPostEditChangeCalled)
-{
-	Super::BuildObject_GameThread(Arguments, OutPostEditChangeCalled);
-
-	UPaperTileSet* TileSet = Cast<UPaperTileSet>(Arguments.ImportedObject);
-	const FPaperTileMetadata* TileMetadata = TileSet->GetTileMetadata(0);
 }
 
 UTexture2D* UInterchangeTileSetFactory::LoadOrCreateTextureAsset(

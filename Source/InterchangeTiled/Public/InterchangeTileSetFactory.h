@@ -30,8 +30,6 @@ private:
 
 	virtual void SetupObject_GameThread(const FSetupObjectParams& Arguments) override;
 
-	virtual void BuildObject_GameThread(const FSetupObjectParams& Arguments, bool& OutPostEditChangeCalled) override;
-
 	virtual UTexture2D* LoadOrCreateTextureAsset(
 		UInterchangeFactoryBaseNode* FactoryNode,
 		FString PackagePath
