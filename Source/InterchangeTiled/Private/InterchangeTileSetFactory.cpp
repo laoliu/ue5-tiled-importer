@@ -84,6 +84,11 @@ UInterchangeFactoryBase::FImportAssetResult UInterchangeTileSetFactory::BeginImp
 
 void UInterchangeTileSetFactory::SetupObject_GameThread(const FSetupObjectParams& Arguments)
 {
+	if (Arguments.bIsReimport)
+	{
+		return;
+	}
+
 	if (Arguments.FactoryNode->GetClass() != UInterchangeTileSetFactoryNode::StaticClass())
 	{
 		UE_LOGFMT(LogInterchangeTiledImport, Warning, "Invalid Factory Node class: {ClassName}", Arguments.FactoryNode->GetClass()->GetName());
