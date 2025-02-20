@@ -5,6 +5,5 @@
 
 FString UInterchangeTileSetNode::GetTypeName() const
 {
-	const FString TypeName = TEXT("TileSetNode");
-	return TypeName;
+	return TEXT("TileSetNode");
 }
