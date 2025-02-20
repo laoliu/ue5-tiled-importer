@@ -15,8 +15,8 @@ void UInterchangeTiledFactory::LogAssetCreationError(
 	Message->AssetType = GetFactoryClass();
 	Message->Text = FText::Format(
 		LOCTEXT("TiledFact_CouldNotCreateAsset", "%s: Could not create asset %s. Reason: %s"),
-		GetFactoryClass()->GetName(),
-		FText::FromString(Arguments.AssetName), 
+		FText::FromString(GetFactoryClass()->GetName()),
+		FText::FromString(Arguments.AssetName),
 		Info
 	);
 	ImportAssetResult.bIsFactorySkipAsset = true;
