@@ -21,4 +21,10 @@ protected:
 		const FText& Info, 
 		FImportAssetResult& ImportAssetResult
 	);
+
+	virtual void LogAssetSetupError(
+		const FSetupObjectParams& Arguments,
+		const FText& Info,
+		FImportAssetResult& ImportAssetResult
+	);
 };
