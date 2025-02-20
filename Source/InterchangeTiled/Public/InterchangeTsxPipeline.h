@@ -33,16 +33,8 @@ public:
 protected:
 
 	virtual void ExecutePipeline(
-		UInterchangeBaseNodeContainer* InBaseNodeContainer, 
+		UInterchangeBaseNodeContainer* BaseNodeContainer, 
 		const TArray<UInterchangeSourceData*>& InSourceDatas, 
 		const FString& ContentBasePath
 	) override;
-
-	UPROPERTY()
-	TObjectPtr<UInterchangeBaseNodeContainer> BaseNodeContainer;
-
-private:
-
-	TArray<UInterchangeTileSetNode*> TileSetNodes;
-	TArray<UInterchangeTileSetFactoryNode*> TileSetFactoryNodes;
 };

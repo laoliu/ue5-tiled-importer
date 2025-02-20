@@ -17,20 +17,18 @@ void UInterchangeTsxPipeline::GetSupportAssetClasses(TArray<UClass*>& PipelineSu
 }
 
 void UInterchangeTsxPipeline::ExecutePipeline(
-	UInterchangeBaseNodeContainer* InBaseNodeContainer, 
+	UInterchangeBaseNodeContainer* BaseNodeContainer, 
 	const TArray<UInterchangeSourceData*>& InSourceDatas, 
 	const FString& ContentBasePath
 )
 {
-	if (!InBaseNodeContainer)
+	if (!BaseNodeContainer)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("UInterchangeTsxPipeline: Cannot execute pre-import pipeline because InBaseNodeContainer is null"));
 		return;
 	}
 
 	ensure(Results);
-
-	BaseNodeContainer = InBaseNodeContainer;
 
 	TArray<FString> TileSetNodeUids;
 	BaseNodeContainer->GetNodes(UInterchangeTileSetNode::StaticClass(), TileSetNodeUids);
