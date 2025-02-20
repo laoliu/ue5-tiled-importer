@@ -113,14 +113,15 @@ void UInterchangeTileSetFactory::SetupObject_GameThread(const FSetupObjectParams
 	TileSet->SetMargin(FCString::Atoi(*ImageMargin));
 	TileSet->SetPerTileSpacing(FCString::Atoi(*TileSpacing));
 	TileSet->SetTileSheetTexture(Texture);
+	// trigger PostEdit to init PerTileData
 	TileSet->PostEditChange();
 
 	PopulateTileMetadata(RootNode->GetChildrenNodes(), TileSet);
 }
 
-void UInterchangeTileSetFactory::BuildObject_GameThread(const FSetupObjectParams& Arguments, bool& OutPostEditchangeCalled)
+void UInterchangeTileSetFactory::BuildObject_GameThread(const FSetupObjectParams& Arguments, bool& OutPostEditChangeCalled)
 {
-	Super::BuildObject_GameThread(Arguments, OutPostEditchangeCalled);
+	Super::BuildObject_GameThread(Arguments, OutPostEditChangeCalled);
 
 	UPaperTileSet* TileSet = Cast<UPaperTileSet>(Arguments.ImportedObject);
 	const FPaperTileMetadata* TileMetadata = TileSet->GetTileMetadata(0);

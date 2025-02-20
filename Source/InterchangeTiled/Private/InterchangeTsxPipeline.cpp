@@ -1,6 +1,5 @@
 #include "InterchangeTsxPipeline.h"
 
-#include "InterchangeGenericTexturePipeline.h"
 #include "Logging/StructuredLog.h"
 #include "PaperTileSet.h"
 
@@ -24,7 +23,7 @@ void UInterchangeTsxPipeline::ExecutePipeline(
 {
 	if (!BaseNodeContainer)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("UInterchangeTsxPipeline: Cannot execute pre-import pipeline because InBaseNodeContainer is null"));
+		UE_LOG(LogTemp, Warning, TEXT("UInterchangeTsxPipeline: Cannot execute pre-import pipeline because BaseNodeContainer is null"));
 		return;
 	}
 

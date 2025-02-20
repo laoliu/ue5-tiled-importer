@@ -21,10 +21,6 @@ class INTERCHANGETILED_API UInterchangeTsxPipeline : public UInterchangePipeline
 public:
 	static FString GetPipelineCategory(UClass* AssetClass);
 
-	/** The name of the pipeline that will be display in the import dialog. */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Assets", meta = (StandAlonePipelineProperty = "True", PipelineInternalEditionData = "True"))
-	FString PipelineDisplayName;
-
 	virtual void GetSupportAssetClasses(TArray<UClass*>& PipelineSupportAssetClasses) const override;
 
 protected:
