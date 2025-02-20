@@ -19,8 +19,6 @@ class INTERCHANGETILED_API UInterchangeTsxPipeline : public UInterchangePipeline
 	GENERATED_BODY()
 
 public:
-	UInterchangeTsxPipeline();
-
 	static FString GetPipelineCategory(UClass* AssetClass);
 
 	/** The name of the pipeline that will be display in the import dialog. */
@@ -34,7 +32,11 @@ public:
 
 protected:
 
-	virtual void ExecutePipeline(UInterchangeBaseNodeContainer* InBaseNodeContainer, const TArray<UInterchangeSourceData*>& InSourceDatas, const FString& ContentBasePath) override;
+	virtual void ExecutePipeline(
+		UInterchangeBaseNodeContainer* InBaseNodeContainer, 
+		const TArray<UInterchangeSourceData*>& InSourceDatas, 
+		const FString& ContentBasePath
+	) override;
 
 	UPROPERTY()
 	TObjectPtr<UInterchangeBaseNodeContainer> BaseNodeContainer;
