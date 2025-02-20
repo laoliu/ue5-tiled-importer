@@ -2,6 +2,7 @@
 
 #include "InterchangeTexture2DNode.h"
 #include "InterchangeTiledModule.h"
+#include "InterchangeTiledUtils.h"
 #include "InterchangeTileSetNode.h"
 #include "InterchangeTileSetFactoryNode.h"
 #include "ImageUtils.h"
@@ -105,33 +106,6 @@ FString UInterchangeTsxTranslator::GetTexturePathFromSourceFilename(FString File
 	FXmlNode* RootNode = TileSetFile.GetRootNode();
 	const FXmlNode* ImageNode = RootNode->FindChildNode("image");
 	FString ImageSource = ImageNode->GetAttribute("source");
-	const FString FullTileSetPath = FPaths::ConvertRelativePathToFull(Filename);
 
-	FString WorkingImageSource = ImageSource;
-	int LevelsAbove = 0, NextParentIndex = WorkingImageSource.Find("../");
-
-	while (NextParentIndex != -1)
-	{
-		LevelsAbove++;
-		WorkingImageSource = WorkingImageSource.RightChop(3);
-		NextParentIndex = WorkingImageSource.Find("../");
-	}
-
-	FString TileSetPath = FPaths::GetPath(FullTileSetPath);
-
-	for (int Level = 0; Level < LevelsAbove; Level++)
-	{
-		int YoungestDescendentIndex;
-		TileSetPath.FindLastChar('/', YoungestDescendentIndex);
-
-		if (YoungestDescendentIndex == -1)
-		{
-			UE_LOG(LogInterchangeTiledImport, Error, TEXT("Couldn't process relative paths."));
-			break;
-		}
-
-		TileSetPath = TileSetPath.Left(YoungestDescendentIndex);
-	}
-
-	return TileSetPath + "/" + WorkingImageSource;
+	return InterchangeTiled::GetAbsolutePath(ImageSource, Filename);
 }
