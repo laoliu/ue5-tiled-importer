@@ -1,8 +1,10 @@
 #include "InterchangeTmxTranslator.h"
 
 #include "InterchangeTiledModule.h"
+#include "InterchangeTiledUtils.h"
 #include "InterchangeTileMapNode.h"
 #include "Logging/StructuredLog.h"
+#include "XmlFile.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(InterchangeTmxTranslator)
 
@@ -80,9 +82,20 @@ bool UInterchangeTmxTranslator::TranslateTileMap(FString Filename, UInterchangeB
 		DisplayLabel,
 		EInterchangeNodeContainerType::TranslatedAsset
 	);
+	TileMapNode->SetAttribute("TileSetFilename", GetTileSetFilenameFromSourceFilename(Filename));
 
 	BaseNodeContainer.AddNode(TileMapNode);
 
 	return true;
+}
+
+FString UInterchangeTmxTranslator::GetTileSetFilenameFromSourceFilename(FString Filename)
+{
+	FXmlFile TileMapFile(Filename);
+	FXmlNode* RootNode = TileMapFile.GetRootNode();
+	const FXmlNode* TileSetNode = RootNode->FindChildNode("tileset");
+	FString ImageSource = TileSetNode->GetAttribute("source");
+
+	return InterchangeTiled::GetAbsolutePath(ImageSource, Filename);
 }
 
