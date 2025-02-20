@@ -38,7 +38,7 @@ TArray<FString> UInterchangeTsxTranslator::GetSupportedFormats() const
 #if WITH_EDITOR
 	if (bGInterchangeEnableTsxImport)
 	{
-		TArray<FString> Formats{ TEXT("tsx;Tiled Tileset") };
+		TArray<FString> Formats{ TEXT("tsx;Tiled Tile Set") };
 		return Formats;
 	}
 #endif
@@ -54,7 +54,6 @@ bool UInterchangeTsxTranslator::Translate(UInterchangeBaseNodeContainer& BaseNod
 {
 	FString Filename = SourceData->GetFilename();
 	FPaths::NormalizeFilename(Filename);
-	UInterchangeSourceNode* SourceNode = UInterchangeSourceNode::FindOrCreateUniqueInstance(&BaseNodeContainer);
 
 	if (!FPaths::FileExists(Filename))
 	{
