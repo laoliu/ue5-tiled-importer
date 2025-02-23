@@ -17,7 +17,7 @@ Import `.tsx` Tile Set and `.tmx` Tile Map files from Tiled Map Editor into Unre
 
 ![image](https://github.com/user-attachments/assets/7c227f3b-944b-4449-9333-e1bece64f6d1)
 
-5. For each element you added:
+5. For each Per Translator Pipeline you added:
     - Choose a `Translator`:
       - `InterchangeTsxTranslator` for Tile Sets
       - `InterchangeTmxTranslator` for Tile Maps
