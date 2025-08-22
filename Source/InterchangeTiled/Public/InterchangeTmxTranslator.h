@@ -30,7 +30,4 @@ private:
 		UInterchangeBaseNodeContainer& BaseNodeContainer
 	) const;
 
-
-	// Get the filename of the TSX tile set file referenced in the source TMX file.
-	static FString GetTileSetFilenameFromSourceFilename(FString Filename);
 };

@@ -20,8 +20,16 @@ struct FInterchangeParsedTilesetInfo {
 // Helper: Parse tilesets json array string to array of FInterchangeParsedTilesetInfo
 static void ParseTilesetsJson(const FString& TilesetsStr, TArray<FInterchangeParsedTilesetInfo>& OutTilesets)
 {
+    // 去掉首尾的中括号
+    FString CleanStr = TilesetsStr;
+    if (CleanStr.StartsWith("[")) {
+        CleanStr.RemoveFromStart("[");
+    }
+    if (CleanStr.EndsWith("]")) {
+        CleanStr.RemoveFromEnd("]");
+    }
     TArray<FString> JsonItems;
-    TilesetsStr.ParseIntoArray(JsonItems, TEXT("},{"), true);
+    CleanStr.ParseIntoArray(JsonItems, TEXT("},{"), true);
     for (FString& Item : JsonItems)
     {
         // Clean up braces
@@ -94,9 +102,6 @@ void UInterchangeTmxPipeline::ExecutePipeline(
 		const UInterchangeBaseNode* Node = BaseNodeContainer->GetNode(TileMapNodeUid);
 		const UInterchangeTileMapNode* TileMapNode = Cast<UInterchangeTileMapNode>(Node);
 
-		FString TileSetFilename;
-		TileMapNode->GetAttribute("TileSetFilename", TileSetFilename);
-
 		UInterchangeTileMapFactoryNode* TileMapFactoryNode = NewObject<UInterchangeTileMapFactoryNode>(
 			BaseNodeContainer,
 			UInterchangeTileMapFactoryNode::StaticClass()
@@ -105,20 +110,6 @@ void UInterchangeTmxPipeline::ExecutePipeline(
 			UInterchangeFactoryBaseNode::BuildFactoryNodeUid(TileMapNodeUid),
 			TileMapNode->GetDisplayLabel() + "_tile_map",
 			EInterchangeNodeContainerType::FactoryData
-		);
-		TileMapFactoryNode->SetAttribute("TileSetFilename", TileSetFilename);
-
-		UInterchangeSourceData* SourceData = InterchangeManager.CreateSourceData(TileSetFilename);
-		SourceData->GetFileContentHash();
-
-		FImportAssetParameters ImportAssetParameters;
-		ImportAssetParameters.bReplaceExisting = false;
-		ImportAssetParameters.bIsAutomated = true;
-
-		InterchangeManager.ImportAsset(
-			ContentImportPath,
-			SourceData,
-			ImportAssetParameters
 		);
 
 		FString TilesetsStr;
