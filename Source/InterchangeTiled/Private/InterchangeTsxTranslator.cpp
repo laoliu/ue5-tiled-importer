@@ -8,6 +8,7 @@
 #include "ImageUtils.h"
 #include "Logging/StructuredLog.h"
 #include "Misc/Optional.h"
+#include "Misc/Paths.h"
 #include "Nodes/InterchangeSourceNode.h"
 #include "XmlFile.h"
 
@@ -93,7 +94,9 @@ bool UInterchangeTsxTranslator::TranslateTileSet(
 		DisplayLabel, 
 		EInterchangeNodeContainerType::TranslatedAsset
 	);
-	TileSetNode->SetAttribute("TextureFilename", GetTexturePathFromSourceFilename(Filename));
+	FString TexturePath = GetTexturePathFromSourceFilename(Filename);
+	TexturePath = InterchangeTiled::GetAbsoluteTexturePath(TexturePath, Filename);
+	TileSetNode->SetAttribute("TextureFilename", TexturePath);
 
 	BaseNodeContainer.AddNode(TileSetNode);
 

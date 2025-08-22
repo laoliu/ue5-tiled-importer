@@ -16,4 +16,17 @@ namespace InterchangeTiled
 	* @return the absolute path corresponding to the one referenced in the external file
 	*/
 	FString GetAbsolutePath(FString Path, FString RelativeTo);
+
+	/**
+	* Get absolute texture path from relative or absolute path and reference file path.
+	*/
+	inline FString GetAbsoluteTexturePath(const FString& TextureFilename, const FString& TmxOrTsxFilePath)
+	{
+		if (FPaths::IsRelative(TextureFilename))
+		{
+			FString Dir = FPaths::GetPath(TmxOrTsxFilePath);
+			return FPaths::Combine(Dir, TextureFilename);
+		}
+		return TextureFilename;
+	}
 }

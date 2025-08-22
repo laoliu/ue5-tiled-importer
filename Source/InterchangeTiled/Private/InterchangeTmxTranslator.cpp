@@ -66,7 +66,7 @@ bool UInterchangeTmxTranslator::TranslateTileMap(FString Filename, UInterchangeB
 	}
 
 	FString DisplayLabel = FPaths::GetBaseFilename(Filename);
-	FString NodeUid("tsx:" + DisplayLabel);
+	FString NodeUid("tmx:" + DisplayLabel);
 
 	UInterchangeTileMapNode* TileMapNode = NewObject<UInterchangeTileMapNode>(&BaseNodeContainer, TileSetClass);
 
@@ -84,8 +84,36 @@ bool UInterchangeTmxTranslator::TranslateTileMap(FString Filename, UInterchangeB
 	);
 	TileMapNode->SetAttribute("TileSetFilename", GetTileSetFilenameFromSourceFilename(Filename));
 
-	BaseNodeContainer.AddNode(TileMapNode);
+	FXmlFile TileMapFile(Filename);
+	FXmlNode* RootNode = TileMapFile.GetRootNode();
+	TArray<FXmlNode*> ChildrenNodes = RootNode->GetChildrenNodes();
 
+	TArray<FString> TilesetJsonArray;
+
+	for (FXmlNode* ChildNode : ChildrenNodes)
+	{
+		if (ChildNode->GetTag() == "tileset")
+		{
+			FString FirstGid = ChildNode->GetAttribute("firstgid");
+			FString Name = ChildNode->GetAttribute("name");
+			FString TileWidth = ChildNode->GetAttribute("tilewidth");
+			FString TileHeight = ChildNode->GetAttribute("tileheight");
+			FXmlNode* ImageNode = ChildNode->FindChildNode("image");
+			FString ImageSource = ImageNode ? ImageNode->GetAttribute("source") : "";
+
+			// 组装为json字符串或其他格式
+			FString TilesetJson = FString::Printf(
+				TEXT("{\"firstgid\":%s,\"name\":\"%s\",\"tilewidth\":%s,\"tileheight\":%s,\"image\":\"%s\"}"),
+				*FirstGid, *Name, *TileWidth, *TileHeight, *ImageSource
+			);
+			TilesetJsonArray.Add(TilesetJson);
+		}
+	}
+
+	// 存到Node
+	TileMapNode->SetAttribute("Tilesets", FString::Join(TilesetJsonArray, TEXT(",")));
+
+	BaseNodeContainer.AddNode(TileMapNode);
 	return true;
 }
 

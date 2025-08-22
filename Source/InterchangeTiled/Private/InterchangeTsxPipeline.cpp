@@ -1,7 +1,9 @@
 #include "InterchangeTsxPipeline.h"
+#include "InterchangeTiledUtils.h"
 
 #include "Logging/StructuredLog.h"
 #include "PaperTileSet.h"
+#include "Misc/Paths.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(InterchangeTsxPipeline)
 
@@ -39,6 +41,17 @@ void UInterchangeTsxPipeline::ExecutePipeline(
 
 		FString TextureFilename;
 		TileSetNode->GetAttribute("TextureFilename", TextureFilename);
+
+        FString TsxFilePath;
+        if (InSourceDatas.Num() > 0 && InSourceDatas[0])
+        {
+            TsxFilePath = InSourceDatas[0]->GetFilename();
+        }
+        else
+        {
+            TsxFilePath = TEXT("");
+        }
+        TextureFilename = InterchangeTiled::GetAbsoluteTexturePath(TextureFilename, TsxFilePath);
 
 		UInterchangeTileSetFactoryNode* TileSetFactoryNode = NewObject<UInterchangeTileSetFactoryNode>(
 			BaseNodeContainer,

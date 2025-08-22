@@ -101,6 +101,7 @@ void UInterchangeTileSetFactory::SetupObject_GameThread(const FSetupObjectParams
 		FPaths::GetPath(Arguments.ImportedObject->GetPathName())
 	);
 
+	FString TmxDirectory = FPaths::GetPath(Arguments.SourceData->GetFilename());
 	FXmlFile TileSetFile(Arguments.SourceData->GetFilename());
 	FXmlNode* RootNode = TileSetFile.GetRootNode();
 
@@ -110,6 +111,17 @@ void UInterchangeTileSetFactory::SetupObject_GameThread(const FSetupObjectParams
 	FString ImageMargin = RootNode->GetAttribute("margin");
 	FString TileCount = RootNode->GetAttribute("tilecount");
 	FString ColumnCount = RootNode->GetAttribute("columns");
+
+	FString ImageSource = RootNode->GetAttribute("image");
+	if (!FPaths::IsRelative(ImageSource))
+	{
+	    // 绝对路径，直接用
+	}
+	else
+	{
+	    // 相对路径，加上前缀
+	    ImageSource = FPaths::Combine(TmxDirectory, ImageSource);
+	}
 
 	UPaperTileSet* TileSet = Cast<UPaperTileSet>(Arguments.ImportedObject);
 
@@ -158,6 +170,8 @@ UTexture2D* UInterchangeTileSetFactory::LoadOrCreateTextureAsset(
 	TArray<UObject*> NewAssets = AssetToolsModule.Get().ImportAssetsAutomated(ImportSettings);
 	UObject* NewAsset = NewAssets[0];
 	Texture = Cast<UTexture2D>(NewAsset);
+	FString AssetPath = Texture->GetPathName(); // 或 Texture->GetPackage()->GetName()
+	TileSetFactoryNode->SetAttribute("TextureFilename", AssetPath);
 
 	return Texture;
 }

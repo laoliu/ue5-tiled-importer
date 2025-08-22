@@ -23,9 +23,10 @@ public:
 		return UPaperTileMap::StaticClass();
 	}
 
-private:
-
 	virtual FImportAssetResult BeginImportAsset_GameThread(const FImportAssetObjectParams& Arguments) override;
-
 	virtual void SetupObject_GameThread(const FSetupObjectParams& Arguments) override;
+
+private:
+    UInterchangeFactoryBaseNode* FindFactoryNodeByUid(const FString& Uid, UInterchangeBaseNodeContainer* NodeContainer);
+    UPaperTileSet* FindOrCreateTileSet(UInterchangeFactoryBaseNode* FactoryNode);
 };
