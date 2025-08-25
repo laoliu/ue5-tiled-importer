@@ -45,6 +45,12 @@ bool UInterchangeTmxTranslator::Translate(UInterchangeBaseNodeContainer& BaseNod
 	FString Filename = SourceData->GetFilename();
 	FPaths::NormalizeFilename(Filename);
 
+	// 只处理 .tmx 文件
+	if (!Filename.EndsWith(TEXT(".tmx"), ESearchCase::IgnoreCase))
+	{
+		return false;
+	}
+
 	if (!FPaths::FileExists(Filename))
 	{
 		return false;

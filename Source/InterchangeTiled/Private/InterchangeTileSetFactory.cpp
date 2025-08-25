@@ -10,6 +10,7 @@
 #include "Logging/StructuredLog.h"
 #include "Modules/ModuleManager.h"
 #include "Nodes/InterchangeBaseNodeContainer.h"
+#include "InterchangePaperImporterSettings.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(InterchangeTileSetFactory)
 
@@ -162,7 +163,7 @@ UTexture2D* UInterchangeTileSetFactory::LoadOrCreateTextureAsset(
 
 	UAutomatedAssetImportData* ImportSettings = NewObject<UAutomatedAssetImportData>(UAutomatedAssetImportData::StaticClass());
 	ImportSettings->bReplaceExisting = false;
-	ImportSettings->DestinationPath = PackagePath;
+	ImportSettings->DestinationPath = PackagePath + "/Textures";
 	ImportSettings->Factory = NewObject<UTextureFactory>(UTextureFactory::StaticClass());
 	ImportSettings->FactoryName = UTextureFactory::StaticClass()->GetName();
 	ImportSettings->Filenames = Filenames;

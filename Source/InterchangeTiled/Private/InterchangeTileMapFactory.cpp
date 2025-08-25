@@ -1,7 +1,10 @@
 #include "InterchangeTileMapFactory.h"
 #include "Nodes/InterchangeBaseNodeContainer.h"
 
+#include "IAssetTools.h"
+#include "AssetToolsModule.h"
 #include "AssetRegistry/AssetRegistryModule.h"
+#include "InterchangePaperImporterSettings.h"
 #include "InterchangeSourceData.h"
 #include "InterchangeTiledModule.h"
 #include "PaperTileLayer.h"
@@ -193,9 +196,11 @@ void UInterchangeTileMapFactory::SetupObject_GameThread(const FSetupObjectParams
 			UPaperTileLayer* Layer = NewObject<UPaperTileLayer>(TileMap, UPaperTileLayer::StaticClass());
 			Layer->DestructiveAllocateMap(LayerWidth, LayerHeight);
 			Layer->LayerName = FText::FromString(LayerName);
-			FLinearColor Color = Layer->GetLayerColor();
-			Color.A = Opacity;
-			Layer->SetLayerColor(Color);
+			//FLinearColor LayerColor = Layer->GetLayerColor();
+			//LayerColor.A = Opacity;
+			FLinearColor LayerColor = FLinearColor::White;
+			LayerColor.A = FMath::Clamp<float>(Opacity, 0.0f, 1.0f);
+			Layer->SetLayerColor(LayerColor);
 
 			// ∑√Œ «∞ºÏ≤È
 			for (int TileIndex = 0; TileIndex < LayerWidth * LayerHeight; TileIndex++)
@@ -272,6 +277,7 @@ UPaperTileSet* UInterchangeTileMapFactory::FindOrCreateTileSet(UInterchangeFacto
         UTexture2D* Texture = Cast<UTexture2D>(StaticLoadObject(UTexture2D::StaticClass(), nullptr, *TextureFilename));
         if (Texture)
         {
+			GetDefault<UInterchangePaperImporterSettings>()->ApplyTextureSettings(Texture);
             TileSet->SetTileSheetTexture(Texture);
         }
     }

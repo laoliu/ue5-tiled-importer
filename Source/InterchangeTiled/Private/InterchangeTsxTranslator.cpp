@@ -55,6 +55,12 @@ bool UInterchangeTsxTranslator::Translate(UInterchangeBaseNodeContainer& BaseNod
 	FString Filename = SourceData->GetFilename();
 	FPaths::NormalizeFilename(Filename);
 
+	// 只处理 .tsx 文件
+	if (!Filename.EndsWith(TEXT(".tsx"), ESearchCase::IgnoreCase))
+	{
+		return false;
+	}
+
 	if (!FPaths::FileExists(Filename))
 	{
 		return false;
